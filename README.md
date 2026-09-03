@@ -1,27 +1,29 @@
 # 🚀 EntreSkill Hub
 
-EntreSkill Hub is a full-stack learning platform designed to help students
-learn new skills, explore courses, enroll in courses, and track their learning
-journey.
+A full-stack learning platform that helps students discover courses, enroll
+in courses, and manage their learning journey.
 
-The project is built using the MERN-style full-stack architecture with
-React.js, Node.js, Express.js, and MongoDB.
+EntreSkill Hub provides authentication, role-based access, course management,
+course enrollment, and user profile functionality through a modern
+React + Node.js + MongoDB architecture.
 
 ---
 
-## 🌐 Live Project
+## 🌐 Live Demo
 
-**Frontend:**  
+### Frontend
 https://eduskill-frontend.vercel.app
 
-**Backend:**  
+### Backend API
 https://eduskill-backend.onrender.com
 
-**GitHub Frontend:**  
-https://github.com/MuSkan1087/eduskill-frontend
+### GitHub Repositories
 
-**GitHub Backend:**  
-https://github.com/MuSkan1087/eduskill-backend
+- Frontend:
+  https://github.com/MuSkan1087/eduskill-frontend
+
+- Backend:
+  https://github.com/MuSkan1087/eduskill-backend
 
 ---
 
@@ -34,15 +36,15 @@ https://github.com/MuSkan1087/eduskill-backend
 - JWT Authentication
 - Protected Routes
 - Logout functionality
-- Role-based access
+- Role-based access control
 
 ### 📚 Course Management
 
-- View all courses
+- View all available courses
 - Search courses
 - View course details
 - Add new courses
-- Edit courses
+- Edit existing courses
 - Delete courses
 - Course image support
 
@@ -53,13 +55,14 @@ https://github.com/MuSkan1087/eduskill-backend
 - My Courses section
 - Learning progress display
 - User profile
+- Protected student routes
 
 ### 👨‍💼 Admin Features
 
 - Add courses
 - Edit courses
 - Delete courses
-- Role-based course management
+- Manage courses using role-based authorization
 
 ---
 
@@ -91,18 +94,60 @@ https://github.com/MuSkan1087/eduskill-backend
 
 - Git
 - GitHub
-- Vercel
-- Render
-- MongoDB Atlas
 - VS Code
+- MongoDB Atlas
+- Render
+- Vercel
 
 ---
 
-## 🏗️ Project Structure
-
-### Frontend
+## 🏗️ System Architecture
 
 ```text
+┌──────────────────────┐
+│   React Frontend     │
+│   Vite + Tailwind    │
+└──────────┬───────────┘
+           │
+           │ Axios / REST API
+           ▼
+┌──────────────────────┐
+│   Node.js + Express  │
+│      Backend API     │
+└──────────┬───────────┘
+           │
+           │ Mongoose
+           ▼
+┌──────────────────────┐
+│    MongoDB Atlas     │
+│       Database       │
+└──────────────────────┘
+
+🔐 Authentication Flow
+
+User
+  │
+  ▼
+Register / Login
+  │
+  ▼
+Express API
+  │
+  ▼
+MongoDB
+  │
+  ▼
+JWT Token
+  │
+  ▼
+Local Storage
+  │
+  ▼
+Protected API Requests
+
+📂 Project Structure
+Frontend
+
 frontend-react/
 │
 ├── public/
@@ -141,6 +186,7 @@ frontend-react/
 ├── vite.config.js
 └── README.md
 
+Backend
 
 backend/
 │
@@ -165,3 +211,26 @@ backend/
 ├── server.js
 ├── package.json
 └── .env
+
+📡 API Endpoints
+
+User APIs
+
+| Method | Endpoint               | Description          |
+| ------ | ---------------------- | -------------------- |
+| POST   | `/api/users/register`  | Register a new user  |
+| POST   | `/api/users/login`     | Login user           |
+| GET    | `/api/users/profile`   | Get user profile     |
+| GET    | `/api/users/mycourses` | Get enrolled courses |
+| GET    | `/api/users`           | Get all users        |
+
+Course APIs
+
+| Method | Endpoint                  | Description        |
+| ------ | ------------------------- | ------------------ |
+| GET    | `/api/courses`            | Get all courses    |
+| GET    | `/api/courses/:id`        | Get course details |
+| POST   | `/api/courses`            | Add a course       |
+| PUT    | `/api/courses/:id`        | Update a course    |
+| DELETE | `/api/courses/:id`        | Delete a course    |
+| POST   | `/api/courses/:id/enroll` | Enroll in a course |
