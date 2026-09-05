@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const role = localStorage.getItem("role");
@@ -21,99 +23,165 @@ function Navbar() {
     setMenuOpen(false);
   };
 
-  return (
-    <nav className="bg-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-6 py-4">
+  const isActive = (path) => location.pathname === path;
 
-        {/* Top Navbar */}
-        <div className="flex justify-between items-center">
+  const linkClass = (path) =>
+    `px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+      isActive(path)
+        ? "text-indigo-600 bg-indigo-50"
+        : "text-slate-600 hover:text-indigo-600 hover:bg-slate-50"
+    }`;
+
+  return (
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* ================= TOP NAVBAR ================= */}
+
+        <div className="h-[76px] flex items-center justify-between">
 
           {/* Logo */}
+
           <Link
             to="/dashboard"
             onClick={closeMenu}
-            className="text-2xl font-bold text-blue-600"
+            className="flex items-center gap-3 group"
           >
-            🎓 LMS Portal
+
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-xl shadow-md group-hover:scale-105 transition-transform duration-200">
+              🚀
+            </div>
+
+            <div className="hidden sm:block">
+
+              <h1 className="text-xl font-bold text-slate-900 leading-tight">
+                EntreSkill Hub
+              </h1>
+
+              <p className="text-[11px] text-slate-400 font-medium tracking-wide">
+                LEARN • BUILD • GROW
+              </p>
+
+            </div>
+
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-5">
+
+          {/* ================= DESKTOP MENU ================= */}
+
+          <div className="hidden lg:flex items-center gap-1">
 
             <Link
               to="/dashboard"
-              className="text-gray-700 hover:text-blue-600 font-medium transition"
+              className={linkClass("/dashboard")}
             >
               Dashboard
             </Link>
 
             <Link
               to="/courses"
-              className="text-gray-700 hover:text-blue-600 font-medium transition"
+              className={linkClass("/courses")}
             >
               Courses
             </Link>
 
             <Link
               to="/mycourses"
-              className="text-gray-700 hover:text-blue-600 font-medium transition"
+              className={linkClass("/mycourses")}
             >
               My Courses
             </Link>
 
             {/* Admin Only */}
+
             {role === "admin" && (
               <Link
                 to="/add-course"
-                className="text-gray-700 hover:text-blue-600 font-medium transition"
+                className={linkClass("/add-course")}
               >
-                ➕ Add Course
+                <span className="mr-1">+</span>
+                Add Course
               </Link>
             )}
 
-            {/* Profile */}
             <Link
               to="/profile"
-              className="text-gray-700 hover:text-blue-600 font-medium transition"
+              className={linkClass("/profile")}
             >
-              👤 Profile
+              Profile
             </Link>
 
-            {/* Name */}
-            <span className="text-gray-600">
-              Hi, <strong>{name || "User"}</strong>
-            </span>
+          </div>
+
+
+          {/* ================= RIGHT SECTION ================= */}
+
+          <div className="hidden lg:flex items-center gap-4">
+
+            {/* User */}
+
+            <Link
+              to="/profile"
+              className="flex items-center gap-3 pl-3 pr-4 py-2 rounded-xl hover:bg-slate-50 transition"
+            >
+
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-sm">
+                {(name || "U").charAt(0).toUpperCase()}
+              </div>
+
+              <div className="text-left">
+
+                <p className="text-sm font-semibold text-slate-800 leading-tight">
+                  {name || "User"}
+                </p>
+
+                <p className="text-xs text-slate-400 capitalize">
+                  {role || "student"}
+                </p>
+
+              </div>
+
+            </Link>
+
 
             {/* Logout */}
+
             <button
               onClick={logout}
-              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition"
+              className="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-red-500 hover:-translate-y-0.5 shadow-sm hover:shadow-md transition-all duration-200"
             >
               Logout
             </button>
 
           </div>
 
-          {/* Mobile Menu Button */}
+
+          {/* ================= MOBILE BUTTON ================= */}
+
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden text-2xl text-gray-700"
+            className="lg:hidden w-11 h-11 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-xl text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition"
+            aria-label="Toggle menu"
           >
             {menuOpen ? "✕" : "☰"}
           </button>
 
         </div>
 
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <div className="md:hidden mt-5 border-t pt-4">
 
-            <div className="flex flex-col gap-4">
+        {/* ================= MOBILE MENU ================= */}
+
+        {menuOpen && (
+
+          <div className="lg:hidden border-t border-slate-100 py-5">
+
+            <div className="flex flex-col gap-2">
 
               <Link
                 to="/dashboard"
                 onClick={closeMenu}
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className={linkClass("/dashboard")}
               >
                 🏠 Dashboard
               </Link>
@@ -121,7 +189,7 @@ function Navbar() {
               <Link
                 to="/courses"
                 onClick={closeMenu}
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className={linkClass("/courses")}
               >
                 📚 Courses
               </Link>
@@ -129,17 +197,16 @@ function Navbar() {
               <Link
                 to="/mycourses"
                 onClick={closeMenu}
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className={linkClass("/mycourses")}
               >
                 🎓 My Courses
               </Link>
 
-              {/* Admin Only */}
               {role === "admin" && (
                 <Link
                   to="/add-course"
                   onClick={closeMenu}
-                  className="text-gray-700 hover:text-blue-600 font-medium"
+                  className={linkClass("/add-course")}
                 >
                   ➕ Add Course
                 </Link>
@@ -148,31 +215,59 @@ function Navbar() {
               <Link
                 to="/profile"
                 onClick={closeMenu}
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className={linkClass("/profile")}
               >
                 👤 Profile
               </Link>
 
-              <div className="text-gray-600">
-                Hi, <strong>{name || "User"}</strong>
-              </div>
 
-              <button
-                onClick={() => {
-                  closeMenu();
-                  logout();
-                }}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold"
-              >
-                Logout
-              </button>
+              {/* Mobile User */}
+
+              <div className="mt-3 pt-4 border-t border-slate-100">
+
+                <div className="flex items-center gap-3 px-3 py-3">
+
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold">
+                    {(name || "U").charAt(0).toUpperCase()}
+                  </div>
+
+                  <div>
+
+                    <p className="font-semibold text-slate-800">
+                      {name || "User"}
+                    </p>
+
+                    <p className="text-xs text-slate-400 capitalize">
+                      {role || "student"}
+                    </p>
+
+                  </div>
+
+                </div>
+
+
+                {/* Mobile Logout */}
+
+                <button
+                  onClick={() => {
+                    closeMenu();
+                    logout();
+                  }}
+                  className="w-full mt-3 bg-slate-900 hover:bg-red-500 text-white py-3 rounded-xl font-semibold transition"
+                >
+                  Logout
+                </button>
+
+              </div>
 
             </div>
 
           </div>
+
         )}
 
       </div>
+
     </nav>
   );
 }
