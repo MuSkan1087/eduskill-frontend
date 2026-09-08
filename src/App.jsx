@@ -8,6 +8,7 @@ import Courses from "./pages/Courses";
 import CourseDetails from "./pages/CourseDetails";
 import MyCourses from "./pages/MyCourses";
 import Profile from "./pages/Profile";
+import ManageUsers from "./pages/ManageUsers";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -75,6 +76,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manage-users"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <ManageUsers />
           </ProtectedRoute>
         }
       />

@@ -34,7 +34,6 @@ function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ================= TOP NAVBAR ================= */}
@@ -48,13 +47,11 @@ function Navbar() {
             onClick={closeMenu}
             className="flex items-center gap-3 group"
           >
-
             <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-xl shadow-md group-hover:scale-105 transition-transform duration-200">
               🚀
             </div>
 
             <div className="hidden sm:block">
-
               <h1 className="text-xl font-bold text-slate-900 leading-tight">
                 EntreSkill Hub
               </h1>
@@ -62,9 +59,7 @@ function Navbar() {
               <p className="text-[11px] text-slate-400 font-medium tracking-wide">
                 LEARN • BUILD • GROW
               </p>
-
             </div>
-
           </Link>
 
 
@@ -93,17 +88,28 @@ function Navbar() {
               My Courses
             </Link>
 
+
             {/* Admin Only */}
 
             {role === "admin" && (
-              <Link
-                to="/add-course"
-                className={linkClass("/add-course")}
-              >
-                <span className="mr-1">+</span>
-                Add Course
-              </Link>
+              <>
+                <Link
+                  to="/add-course"
+                  className={linkClass("/add-course")}
+                >
+                  <span className="mr-1">+</span>
+                  Add Course
+                </Link>
+
+                <Link
+                  to="/manage-users"
+                  className={linkClass("/manage-users")}
+                >
+                  👥 Manage Users
+                </Link>
+              </>
             )}
+
 
             <Link
               to="/profile"
@@ -125,13 +131,11 @@ function Navbar() {
               to="/profile"
               className="flex items-center gap-3 pl-3 pr-4 py-2 rounded-xl hover:bg-slate-50 transition"
             >
-
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-sm">
                 {(name || "U").charAt(0).toUpperCase()}
               </div>
 
               <div className="text-left">
-
                 <p className="text-sm font-semibold text-slate-800 leading-tight">
                   {name || "User"}
                 </p>
@@ -139,9 +143,7 @@ function Navbar() {
                 <p className="text-xs text-slate-400 capitalize">
                   {role || "student"}
                 </p>
-
               </div>
-
             </Link>
 
 
@@ -173,7 +175,6 @@ function Navbar() {
         {/* ================= MOBILE MENU ================= */}
 
         {menuOpen && (
-
           <div className="lg:hidden border-t border-slate-100 py-5">
 
             <div className="flex flex-col gap-2">
@@ -202,15 +203,29 @@ function Navbar() {
                 🎓 My Courses
               </Link>
 
+
+              {/* Admin Only */}
+
               {role === "admin" && (
-                <Link
-                  to="/add-course"
-                  onClick={closeMenu}
-                  className={linkClass("/add-course")}
-                >
-                  ➕ Add Course
-                </Link>
+                <>
+                  <Link
+                    to="/add-course"
+                    onClick={closeMenu}
+                    className={linkClass("/add-course")}
+                  >
+                    ➕ Add Course
+                  </Link>
+
+                  <Link
+                    to="/manage-users"
+                    onClick={closeMenu}
+                    className={linkClass("/manage-users")}
+                  >
+                    👥 Manage Users
+                  </Link>
+                </>
               )}
+
 
               <Link
                 to="/profile"
@@ -232,7 +247,6 @@ function Navbar() {
                   </div>
 
                   <div>
-
                     <p className="font-semibold text-slate-800">
                       {name || "User"}
                     </p>
@@ -240,7 +254,6 @@ function Navbar() {
                     <p className="text-xs text-slate-400 capitalize">
                       {role || "student"}
                     </p>
-
                   </div>
 
                 </div>
@@ -263,11 +276,9 @@ function Navbar() {
             </div>
 
           </div>
-
         )}
 
       </div>
-
     </nav>
   );
 }
