@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import api from "../services/api";
+import { useNavigate, Link } from "react-router-dom";
+import API from "../services/api";
+import "./Register.css";
 
 function Register() {
   const navigate = useNavigate();
@@ -11,90 +12,214 @@ function Register() {
     password: "",
   });
 
-  const { name, email, password } = formData;
+  const [loading, setLoading] = useState(false);
 
-  const onChange = (e) => {
+  const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const onSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await api.post("/users/register", formData);
+      setLoading(true);
 
-      alert("Registration Successful");
+      await API.post("/users/register", {
+        ...formData,
+        role: "student",
+      });
+
+      alert("Registration successful! Please login.");
       navigate("/");
-    } catch (err) {
-      alert(err.response?.data?.message || "Registration Failed");
+    } catch (error) {
+      alert(
+        error.response?.data?.message ||
+          "Registration failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 p-4">
-      <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md">
-        <h1 className="text-4xl font-bold text-center mb-8">
-          Register
-        </h1>
+    <div className="register-page">
 
-        <form onSubmit={onSubmit} className="space-y-5">
-          {/* Name */}
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={name}
-            onChange={onChange}
-            className="w-full border rounded-xl p-3"
-            required
-          />
+      {/* LEFT SECTION */}
+      <div className="register-left">
 
-          {/* Email */}
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={onChange}
-            className="w-full border rounded-xl p-3"
-            required
-          />
+        <div className="register-brand">
+          <div className="brand-icon">🚀</div>
 
-          {/* Password */}
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={onChange}
-            className="w-full border rounded-xl p-3"
-            minLength="6"
-            required
-          />
+          <div>
+            <h1>EntreSkill Hub</h1>
+            <p>LEARN • BUILD • GROW</p>
+          </div>
+        </div>
 
-          {/* Role */}
-          <div className="w-full border rounded-xl p-3 bg-gray-100 text-gray-700">
-            Role: <span className="font-semibold">Student</span>
+        <div className="register-left-content">
+          <span className="register-badge">
+            ✨ Start Your Learning Journey
+          </span>
+
+          <h2>
+            Build Skills.
+            <br />
+            <span>Build Your Future.</span>
+          </h2>
+
+          <p>
+            Join EntreSkill Hub and learn industry-ready skills,
+            explore courses and grow towards your career goals.
+          </p>
+
+          <div className="register-benefits">
+
+            <div className="benefit-item">
+              <div className="benefit-icon">📚</div>
+              <div>
+                <h3>Learn New Skills</h3>
+                <p>Access structured learning resources.</p>
+              </div>
+            </div>
+
+            <div className="benefit-item">
+              <div className="benefit-icon">🎯</div>
+              <div>
+                <h3>Track Your Progress</h3>
+                <p>Monitor your learning journey easily.</p>
+              </div>
+            </div>
+
+            <div className="benefit-item">
+              <div className="benefit-icon">🚀</div>
+              <div>
+                <h3>Grow Your Career</h3>
+                <p>Develop skills for real-world opportunities.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div className="register-left-footer">
+          © 2026 EntreSkill Hub. Learn • Build • Grow
+        </div>
+
+      </div>
+
+      {/* RIGHT SECTION */}
+      <div className="register-right">
+
+        <div className="register-card">
+
+          <div className="register-card-header">
+            <span className="mobile-brand-icon">🚀</span>
+
+            <h2>Create your account</h2>
+
+            <p>
+              Start your learning journey with EntreSkill Hub
+            </p>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-semibold transition"
-          >
-            Register as Student
-          </button>
-        </form>
+          <form onSubmit={handleSubmit}>
 
-        <p className="text-center mt-6">
-          Already have an account?{" "}
-          <Link to="/" className="text-blue-600 font-semibold">
-            Login
+            {/* NAME */}
+            <div className="form-group">
+              <label>Full Name</label>
+
+              <div className="input-wrapper">
+                <span>👤</span>
+
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Enter your full name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* EMAIL */}
+            <div className="form-group">
+              <label>Email Address</label>
+
+              <div className="input-wrapper">
+                <span>✉️</span>
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* PASSWORD */}
+            <div className="form-group">
+              <label>Password</label>
+
+              <div className="input-wrapper">
+                <span>🔒</span>
+
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Create a password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  minLength={6}
+                />
+              </div>
+
+              <small>Password must contain at least 6 characters.</small>
+            </div>
+
+            {/* ROLE */}
+            <div className="student-role">
+              <div className="student-role-icon">🎓</div>
+
+              <div>
+                <span>Account Type</span>
+                <strong>Student</strong>
+              </div>
+
+              <div className="role-check">✓</div>
+            </div>
+
+            {/* BUTTON */}
+            <button
+              type="submit"
+              className="register-button"
+              disabled={loading}
+            >
+              {loading ? "Creating Account..." : "Create Student Account"}
+              {!loading && <span>→</span>}
+            </button>
+
+          </form>
+
+          <div className="login-divider">
+            <span>Already have an account?</span>
+          </div>
+
+          <Link to="/" className="login-link">
+            Login to your account
           </Link>
-        </p>
+
+        </div>
+
       </div>
+
     </div>
   );
 }

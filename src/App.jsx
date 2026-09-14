@@ -11,6 +11,12 @@ import Profile from "./pages/Profile";
 import ManageUsers from "./pages/ManageUsers";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import PaymentPage from "./pages/PaymentPage";
+import LearningModules from "./pages/LearningModules";
+import PracticeQuestions from "./pages/PracticeQuestions";
+import ModuleDetails from "./pages/ModuleDetails";
+import LessonPage from "./pages/LessonPage";
+import CertificatePage from "./pages/CertificatePage";
 
 function App() {
   return (
@@ -87,7 +93,58 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/payment"
+        element={
+          <ProtectedRoute>
+            <PaymentPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/learning/:courseId"
+        element={
+          <ProtectedRoute>
+            <LearningModules />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/practice/:courseId"
+        element={
+          <ProtectedRoute>
+            <PracticeQuestions />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/learning/:courseId/module/:moduleId"
+        element={
+          <ProtectedRoute>
+            <ModuleDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/learning/:courseId/module/:moduleId/lesson/:lessonId"
+        element={
+          <ProtectedRoute>
+            <LessonPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/certificate/:courseId"
+        element={
+          <ProtectedRoute>
+            <CertificatePage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
+
+
+
 
   );
 }

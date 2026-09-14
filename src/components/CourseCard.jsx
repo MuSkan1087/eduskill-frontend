@@ -1,39 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaClock, FaStar, FaArrowRight } from "react-icons/fa";
 import { useState } from "react";
-import api from "../services/api";
 
 function CourseCard({ course }) {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [enrolled, setEnrolled] = useState(course.isEnrolled || false);
 
-  const enrollCourse = async () => {
-    try {
-      setLoading(true);
-
-      const res = await api.post(
-        `/courses/${course._id}/enroll`
-      );
-
-      alert(res.data.message);
-      setEnrolled(true);
-
-    } catch (err) {
-
-      if (
-        err.response?.data?.message ===
-        "Already enrolled in this course"
-      ) {
-        setEnrolled(true);
-      }
-
-      alert(
-        err.response?.data?.message ||
-        "Enrollment failed"
-      );
-
-    } finally {
-      setLoading(false);
+  const handleLearningOrPayment = () => {
+    if (enrolled) {
+      // Already enrolled → Learning Modules
+      navigate(`/learning/${course._id}`);
+    } else {
+      // Not enrolled → Payment Page
+      navigate("/payment", {
+        state: {
+          course: course,
+        },
+      });
     }
   };
 
@@ -77,7 +62,6 @@ function CourseCard({ course }) {
 
       </div>
 
-
       {/* Content */}
       <div className="p-6">
 
@@ -86,12 +70,10 @@ function CourseCard({ course }) {
           {course.title}
         </h2>
 
-
         {/* Description */}
         <p className="text-gray-500 text-sm leading-6 mb-5 line-clamp-2">
           {course.description}
         </p>
-
 
         {/* Course Info */}
         <div className="flex items-center justify-between text-sm text-gray-500 mb-5">
@@ -108,7 +90,6 @@ function CourseCard({ course }) {
 
           </div>
 
-
           <div className="flex items-center gap-2">
 
             <div className="w-8 h-8 rounded-lg bg-yellow-50 flex items-center justify-center">
@@ -123,10 +104,8 @@ function CourseCard({ course }) {
 
         </div>
 
-
         {/* Divider */}
         <div className="border-t border-gray-100 mb-5"></div>
-
 
         {/* Price */}
         <div className="flex items-center justify-between mb-5">
@@ -143,7 +122,6 @@ function CourseCard({ course }) {
 
           </div>
 
-
           <div className="text-right">
 
             <p className="text-xs text-gray-400 mb-1">
@@ -157,7 +135,6 @@ function CourseCard({ course }) {
           </div>
 
         </div>
-
 
         {/* Buttons */}
         <div className="flex gap-3">
@@ -177,21 +154,21 @@ function CourseCard({ course }) {
 
           </Link>
 
-
-          {/* Enroll */}
+          {/* Learning / Payment */}
           <button
-            onClick={enrollCourse}
-            disabled={loading || enrolled}
-            className={`flex-1 py-3 rounded-xl text-white font-semibold transition-all duration-200 ${enrolled
-                ? "bg-emerald-500 cursor-default"
+            onClick={handleLearningOrPayment}
+            disabled={loading}
+            className={`flex-1 py-3 rounded-xl text-white font-semibold transition-all duration-200 ${
+              enrolled
+                ? "bg-emerald-500 hover:bg-emerald-600 shadow-md"
                 : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-md hover:shadow-lg"
-              }`}
+            }`}
           >
 
             {loading
-              ? "Enrolling..."
+              ? "Processing..."
               : enrolled
-                ? "✓ Enrolled"
+                ? "Learning Now →"
                 : "Enroll Now"}
 
           </button>

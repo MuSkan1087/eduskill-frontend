@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
-import { FaClock, FaLayerGroup, FaSignal, FaCheckCircle } from "react-icons/fa";
+import {
+  FaClock,
+  FaLayerGroup,
+  FaSignal,
+  FaCheckCircle,
+} from "react-icons/fa";
 
 function CourseDetails() {
   const { id } = useParams();
@@ -12,12 +17,35 @@ function CourseDetails() {
   const [enrolling, setEnrolling] = useState(false);
   const [enrolled, setEnrolled] = useState(false);
 
-  // Fetch Course
+  // Fetch Course + Check Enrollment
   useEffect(() => {
     const fetchCourse = async () => {
       try {
+        // Fetch course
         const res = await api.get(`/courses/${id}`);
         setCourse(res.data);
+
+        // Check if user is already enrolled
+        try {
+          const myCoursesRes = await api.get("/users/mycourses");
+
+          const myCourses = Array.isArray(myCoursesRes.data)
+            ? myCoursesRes.data
+            : [];
+
+          const alreadyEnrolled = myCourses.some(
+            (item) =>
+              item._id === id ||
+              item._id?.toString() === id.toString()
+          );
+
+          setEnrolled(alreadyEnrolled);
+        } catch (enrollmentError) {
+          console.log(
+            "Enrollment check failed:",
+            enrollmentError
+          );
+        }
       } catch (err) {
         console.log(err);
         alert("Course load nahi hua");
@@ -27,31 +55,20 @@ function CourseDetails() {
     fetchCourse();
   }, [id]);
 
-  // Enroll Course
-  const handleEnroll = async () => {
-    try {
-      setEnrolling(true);
-
-      const res = await api.post(`/courses/${id}/enroll`);
-
-      alert(res.data.message || "Enrolled successfully");
-
-      setEnrolled(true);
-    } catch (err) {
-      console.log(err);
-      console.log(err.response?.data);
-
-      const message =
-        err.response?.data?.message || "Enrollment failed";
-
-      alert(message);
-
-      if (message.toLowerCase().includes("already enrolled")) {
-        setEnrolled(true);
-      }
-    } finally {
-      setEnrolling(false);
+  // Payment / Learning
+  const handleEnroll = () => {
+    // Already enrolled
+    if (enrolled) {
+      navigate(`/learning/${id}`);
+      return;
     }
+
+    // Not enrolled → Payment Page
+    navigate("/payment", {
+      state: {
+        course: course,
+      },
+    });
   };
 
   // Loading
@@ -126,7 +143,8 @@ function CourseDetails() {
                       alt={course.title}
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
-                        e.currentTarget.nextElementSibling.style.display = "flex";
+                        e.currentTarget.nextElementSibling.style.display =
+                          "flex";
                       }}
                       className="w-full h-64 sm:h-80 lg:h-[420px] object-cover"
                     />
@@ -134,8 +152,9 @@ function CourseDetails() {
 
                   {/* Fallback */}
                   <div
-                    className={`w-full h-64 sm:h-80 lg:h-[420px] bg-gradient-to-br from-indigo-600 via-purple-600 to-violet-700 items-center justify-center ${course.image ? "hidden" : "flex"
-                      }`}
+                    className={`w-full h-64 sm:h-80 lg:h-[420px] bg-gradient-to-br from-indigo-600 via-purple-600 to-violet-700 items-center justify-center ${
+                      course.image ? "hidden" : "flex"
+                    }`}
                   >
                     <div className="text-center text-white">
                       <div className="text-7xl mb-4">🚀</div>
@@ -183,6 +202,7 @@ function CourseDetails() {
 
                   {/* Category */}
                   <div className="flex items-center gap-4 p-5 rounded-2xl bg-indigo-50">
+
                     <div className="w-11 h-11 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
                       <FaLayerGroup />
                     </div>
@@ -196,10 +216,12 @@ function CourseDetails() {
                         {course.category}
                       </p>
                     </div>
+
                   </div>
 
                   {/* Duration */}
                   <div className="flex items-center gap-4 p-5 rounded-2xl bg-purple-50">
+
                     <div className="w-11 h-11 rounded-xl bg-purple-600 text-white flex items-center justify-center">
                       <FaClock />
                     </div>
@@ -213,10 +235,12 @@ function CourseDetails() {
                         {course.duration}
                       </p>
                     </div>
+
                   </div>
 
                   {/* Level */}
                   <div className="flex items-center gap-4 p-5 rounded-2xl bg-violet-50">
+
                     <div className="w-11 h-11 rounded-xl bg-violet-600 text-white flex items-center justify-center">
                       <FaSignal />
                     </div>
@@ -230,10 +254,12 @@ function CourseDetails() {
                         {course.level}
                       </p>
                     </div>
+
                   </div>
 
-                  {/* Certificate */}
+                  {/* Learning */}
                   <div className="flex items-center gap-4 p-5 rounded-2xl bg-green-50">
+
                     <div className="w-11 h-11 rounded-xl bg-green-600 text-white flex items-center justify-center">
                       <FaCheckCircle />
                     </div>
@@ -247,6 +273,7 @@ function CourseDetails() {
                         Practical Skills
                       </p>
                     </div>
+
                   </div>
 
                 </div>
@@ -267,6 +294,7 @@ function CourseDetails() {
                   </p>
 
                   <div className="flex items-end gap-2">
+
                     <span className="text-4xl font-bold text-white">
                       ₹{course.price}
                     </span>
@@ -274,6 +302,7 @@ function CourseDetails() {
                     <span className="text-slate-400 text-sm mb-1">
                       one-time
                     </span>
+
                   </div>
 
                 </div>
@@ -319,20 +348,21 @@ function CourseDetails() {
 
                   </div>
 
-                  {/* Enroll Button */}
+                  {/* Enroll / Learning Button */}
                   <button
                     onClick={handleEnroll}
-                    disabled={enrolling || enrolled}
-                    className={`w-full py-3.5 rounded-xl text-white font-bold transition-all duration-200 shadow-sm ${enrolled
-                        ? "bg-green-600"
+                    disabled={enrolling}
+                    className={`w-full py-3.5 rounded-xl text-white font-bold transition-all duration-200 shadow-sm ${
+                      enrolled
+                        ? "bg-green-600 hover:bg-green-700 hover:-translate-y-0.5"
                         : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:-translate-y-0.5 hover:shadow-lg"
-                      }`}
+                    }`}
                   >
                     {enrolling
-                      ? "Enrolling..."
+                      ? "Processing..."
                       : enrolled
-                        ? "✓ Enrolled"
-                        : "Enroll Now"}
+                        ? "Learning Now →"
+                        : "Proceed to Payment"}
                   </button>
 
                   {/* Go To My Courses */}
